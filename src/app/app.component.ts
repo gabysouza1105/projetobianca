@@ -22,30 +22,20 @@ export class AppComponent {
       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
       const wsName: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsName];
-      this.data = (XLSX.utils.sheet_to_json(ws, { raw: false,header: 1,dateNF: 'yyyy"-"MM"-"dd" "h":"M' }));
+      this.data = (XLSX.utils.sheet_to_json(ws, { raw: false, header: 1, dateNF: 'yyyy"-"MM"-"dd" "h":"M' }));
 
       const data = this.data.slice(1);
 
-      // const dataSortedByCPF = data.sort((element1 : any,element2: any) => Number(element1[0].replace('.','').replace('-','')) - Number(element2[0].replace('.','').replace('-','')));
-
-      
       const dataGroupedByCpf = this.groupBy(data, 0);
-      
-      
-      // const dataSortedByCpfAndDate : Array<any> = [];
-      // Object.values(dataGroupedByCpf).forEach((element: any, index) => {
-      //   const result = element.sort((element1:any,element2:any) => moment((element1[1].slice(0,element1[1].length-5)),'M/D/YY').valueOf() - moment((element2[1].slice(0,element2[1].length-5)),'M/D/YY').valueOf()) 
-      //   dataSortedByCpfAndDate.push(result) 
-      // });
 
       const dataGroupedByCpfAndDate = Object.values(dataGroupedByCpf).map((element: any) => {
         return this.groupBy(element, 1);
       })
 
-      const ready = dataGroupedByCpfAndDate.map((element: any) =>{
+      const ready = dataGroupedByCpfAndDate.map((element: any) => {
         return Object.values(element).map((element2: any) => {
-          const element2_ = element2.map((element3 : any) => {
-            return  [
+          const element2_ = element2.map((element3: any) => {
+            return [
               element3[0] != undefined ? `"${element3[0]}"        ` : '""',
               element3[1] != undefined ? `"${element3[1]}"` : '""',
               element3[2] != undefined ? `"${element3[2]}"  ` : '""',
@@ -79,8 +69,8 @@ export class AppComponent {
               element3[33] != undefined ? `"${element3[33]}"` : '',
             ]
           });
-          const result2 = element2_.reduce((inc:any,element3:any) =>{
-            return  [
+          const result2 = element2_.reduce((inc: any, element3: any) => {
+            return [
               element3[0],
               element3[1],
               element3[2],
@@ -114,8 +104,8 @@ export class AppComponent {
               element3[30],
             ]
           })
-          
-          const final = result2.map((element3:any, index:any) =>{
+
+          const final = result2.map((element3: any, index: any) => {
             if (index == 12) {
               return `"${element3}" `
             } else {
@@ -135,17 +125,17 @@ export class AppComponent {
 
       result.unshift(header);
       this.saveFile(result.join("\n"))
-      
+
     }
   }
 
-  saveFile(text:string) {
-    const blob = 
-        new Blob([
-                 text], 
-                 {type: "text/plain;charset=utf-8"});
+  saveFile(text: string) {
+    const blob =
+      new Blob([
+        text],
+        { type: "text/plain;charset=utf-8" });
     saveAs(blob, "save-me.csv");
-}
+  }
 
   groupBy = (array: any, key: any) => {
     // Return the end result
@@ -159,6 +149,6 @@ export class AppComponent {
     }, {}); // empty object is the initial value for result object
   };
 
-  
+
 
 }
